@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Cours - Master THYP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .config-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .cours-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .cours-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .cours-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cours-id {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .cours-title {
+            font-size: 1.4rem;
+            color: #333;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .cours-code {
+            color: #666;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .cours-info {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .info-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .etudiants-section {
+            margin-top: 20px;
+        }
+
+        .etudiants-title {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .etudiants-count {
+            background: #764ba2;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .etudiants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .etudiant-item {
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .etudiant-item:hover {
+            background: linear-gradient(135deg, #667eea25 0%, #764ba225 100%);
+            transform: translateX(5px);
+        }
+
+        .etudiant-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .etudiant-numero {
+            font-size: 0.85rem;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #f5c6cb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cours-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cours-card {
+                padding: 20px;
+            }
+
+            .cours-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            .config-section {
+                padding: 15px;
+            }
+
+            .cours-card {
+                padding: 15px;
+            }
+
+            .info-badge {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .cours-grid {
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Liste des Cours - Master THYP</h1>
+
+        <!-- Configuration Omeka -->
+        <div class="config-section">
+            <div class="config-grid">
+                <div class="form-group">
+                    <label for="omekaUrl">🔗 URL de l'API Omeka-S</label>
+                    <input type="text" id="omekaUrl" value="http://localhost/omk_thyp_25-26/api/" placeholder="http://localhost/omeka-s/api/">
+                </div>
+                <button class="btn btn-primary" id="btnLoadCours">Charger les cours</button>
+            </div>
+            <div id="errorMessage"></div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Chargement des cours en cours...</p>
+        </div>
+
+        <!-- Liste des cours -->
+        <div id="coursList" class="cours-grid"></div>
+    </div>
+
+    <script type="module">
+        import { omk } from './js/omk.js';
+
+        class CoursApp {
+            constructor() {
+                this.omk = null;
+                this.cours = [];
+                
+                this.initElements();
+                this.initEventListeners();
+            }
+
+            initElements() {
+                this.btnLoadCours = document.getElementById('btnLoadCours');
+                this.loading = document.getElementById('loading');
+                this.coursList = document.getElementById('coursList');
+                this.errorMessage = document.getElementById('errorMessage');
+            }
+
+            initEventListeners() {
+                this.btnLoadCours.addEventListener('click', () => this.loadCours());
+            }
+
+            showLoading(show) {
+                this.loading.style.display = show ? 'block' : 'none';
+            }
+
+            showError(message) {
+                this.errorMessage.innerHTML = `
+                    <div class="error-message">
+                        ⚠️ ${message}
+                    </div>
+                `;
+            }
+
+            clearError() {
+                this.errorMessage.innerHTML = '';
+            }
+
+            async loadCours() {
+                const apiUrl = document.getElementById('omekaUrl').value;
+                const keyIdentity = '2TD8L8Kw9ajkgQ0fmLo0A2HTbvnMIsgR';
+                const keyCredential = 'JjEANqtr7OX1GPabBQGQ0bIN1ZhgSSjS';
+
+                if (!apiUrl) {
+                    this.showError('Veuillez renseigner l\'URL de l\'API Omeka-S');
+                    return;
+                }
+
+                this.clearError();
+                this.showLoading(true);
+                this.btnLoadCours.disabled = true;
+
+                try {
+                    // Initialiser omk.js
+                    this.omk = new omk({
+                        api: apiUrl,
+                        key: keyCredential,
+                        ident: keyIdentity
+                    });
+
+                    // Attendre l'initialisation
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // Récupérer les cours
+                    await this.getCours();
+
+                    // Afficher les cours
+                    this.showCours();
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showError('Erreur lors du chargement des cours: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                    this.btnLoadCours.disabled = false;
+                }
+            }
+
+            async getCours() {
+                try {
+                    // Récupérer l'ID de la classe Cours
+                    const coursClass = this.omk.getClassByTerm('master:Cours');
+                    
+                    if (!coursClass) {
+                        throw new Error('Classe master:Cours non trouvée dans le vocabulaire');
+                    }
+
+                    // Requête pour récupérer tous les cours
+                    const query = `resource_class_id=${coursClass['o:id']}`;
+                    this.cours = this.omk.getAllItems(query);
+
+                    console.log(`${this.cours.length} cours récupéré(s)`);
+
+                    // Pour chaque cours, récupérer les étudiants inscrits
+                    for (let cours of this.cours) {
+                        cours.etudiants = await this.getEtudiantsByCours(cours['o:id']);
+                    }
+
+                } catch (error) {
+                    console.error('Erreur dans getCours:', error);
+                    throw error;
+                }
+            }
+
+            async getEtudiantsByCours(coursId) {
+                try {
+                    // Récupérer l'ID de la propriété master:inscritDans
+                    const inscritDansProp = this.omk.getPropByTerm('master:inscritDans');
+                    
+                    if (!inscritDansProp) {
+                        console.warn('Propriété master:inscritDans non trouvée');
+                        return [];
+                    }
+
+                    // Rechercher les étudiants ayant une relation avec ce cours
+                    const query = `property[0][property]=${inscritDansProp['o:id']}&property[0][type]=res&property[0][text]=${coursId}`;
+                    const etudiants = this.omk.searchItems(query);
+
+                    return etudiants || [];
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des étudiants:', error);
+                    return [];
+                }
+            }
+
+            showCours() {
+                this.coursList.innerHTML = '';
+
+                if (!this.cours || this.cours.length === 0) {
+                    this.coursList.innerHTML = '<div class="no-data">📭 Aucun cours trouvé</div>';
+                    return;
+                }
+
+                this.cours.forEach(cours => {
+                    const coursCard = this.createCoursCard(cours);
+                    this.coursList.appendChild(coursCard);
+                });
+            }
+
+            createCoursCard(cours) {
+                const card = document.createElement('div');
+                card.className = 'cours-card';
+
+                // Extraction des données
+                const id = cours['o:id'];
+                const titre = this.getPropertyValue(cours, 'master:titreCours') || 
+                             this.getPropertyValue(cours, 'dcterms:title') || 
+                             'Titre non spécifié';
+                const code = this.getPropertyValue(cours, 'master:codeCours') || '';
+                const credits = this.getPropertyValue(cours, 'master:credits') || '';
+                const semestre = this.getPropertyValue(cours, 'master:semestre') || '';
+                const etudiants = cours.etudiants || [];
+
+                // Construction de la carte
+                card.innerHTML = `
+                    <div class="cours-header">
+                        <div class="cours-id">ID: ${id}</div>
+                        <div class="cours-title">${titre}</div>
+                        ${code ? `<div class="cours-code">Code: ${code}</div>` : ''}
+                    </div>
+
+                    ${credits || semestre ? `
+                        <div class="cours-info">
+                            ${credits ? `<div class="info-badge">🎓 ${credits} ECTS</div>` : ''}
+                            ${semestre ? `<div class="info-badge">📅 ${semestre}</div>` : ''}
+                        </div>
+                    ` : ''}
+
+                    <div class="etudiants-section">
+                        <div class="etudiants-title">
+                            👥 Étudiants inscrits
+                            <span class="etudiants-count">${etudiants.length}</span>
+                        </div>
+                        <div class="etudiants-list">
+                            ${etudiants.length > 0 ? 
+                                etudiants.map(etudiant => this.createEtudiantItem(etudiant)).join('') :
+                                '<div style="color: #999; font-style: italic; padding: 10px;">Aucun étudiant inscrit</div>'
+                            }
+                        </div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            createEtudiantItem(etudiant) {
+                const nom = this.getPropertyValue(etudiant, 'master:nomEtudiant') || '';
+                const prenom = this.getPropertyValue(etudiant, 'master:prenomEtudiant') || '';
+                const numero = this.getPropertyValue(etudiant, 'master:numeroEtudiant') || '';
+                const nomComplet = `${prenom} ${nom}`.trim() || 
+                                  this.getPropertyValue(etudiant, 'dcterms:title') || 
+                                  'Nom non spécifié';
+
+                return `
+                    <div class="etudiant-item">
+                        <span class="etudiant-name">${nomComplet}</span>
+                        ${numero ? `<span class="etudiant-numero">N° ${numero}</span>` : ''}
+                    </div>
+                `;
+            }
+
+            getPropertyValue(item, property) {
+                if (!item || !item[property]) return null;
+                
+                const prop = item[property];
+                if (Array.isArray(prop) && prop.length > 0) {
+                    return prop[0]['@value'] || prop[0]['o:label'] || null;
+                }
+                return null;
+            }
+        }
+
+        // Initialiser l'application au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            new CoursApp();
+        });
+    </script>
+</body>
+</html>
