@@ -502,14 +502,14 @@
 
                     ${credits || semestre ? `
                         <div class="cours-info">
-                            ${credits ? `<div class="info-badge">🎓 ${credits} ECTS</div>` : ''}
-                            ${semestre ? `<div class="info-badge">📅 ${semestre}</div>` : ''}
+                            ${credits ? `<div class="info-badge"> ${credits} ECTS</div>` : ''}
+                            ${semestre ? `<div class="info-badge"> ${semestre}</div>` : ''}
                         </div>
                     ` : ''}
 
                     <div class="etudiants-section">
                         <div class="etudiants-title">
-                            👥 Étudiants inscrits
+                            Étudiants inscrits
                             <span class="etudiants-count">${etudiants.length}</span>
                         </div>
                         <div class="etudiants-list">
