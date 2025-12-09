@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluations - Master THYP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .config-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .eval-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .eval-form h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .evals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .eval-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .eval-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .eval-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .eval-id {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .eval-title {
+            font-size: 1.3rem;
+            color: #333;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .note-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        .eval-info {
+            margin: 15px 0;
+        }
+
+        .info-item {
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 100px;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .error-message, .success-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .evals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Gestion des Évaluations - Master THYP</h1>
+
+        <!-- Configuration Omeka -->
+        <div class="config-section">
+            <div class="config-grid">
+                <div class="form-group">
+                    <label for="omekaUrl"> URL de l'API Omeka-S</label>
+                    <input type="text" id="omekaUrl" value="http://localhost/omk_thyp_25-26/api/" placeholder="http://localhost/omeka-s/api/">
+                </div>
+                <button class="btn btn-primary" id="btnInit">Initialiser</button>
+            </div>
+            <div id="errorMessage"></div>
+            <div id="successMessage"></div>
+
+            <!-- Onglets -->
+            <div class="tabs">
+                <button class="tab active" data-tab="create"> Créer une évaluation</button>
+                <button class="tab" data-tab="list"> Liste des évaluations</button>
+            </div>
+
+            <!-- Onglet Création -->
+            <div id="createTab" class="tab-content active">
+                <div class="eval-form">
+                    <h3>Créer une nouvelle évaluation</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="selectCours"> Cours</label>
+                            <select id="selectCours">
+                                <option value="">Sélectionnez un cours</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectEtudiant">👤 Étudiant</label>
+                            <select id="selectEtudiant">
+                                <option value="">Sélectionnez un étudiant</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="titreEval"> Titre de l'évaluation</label>
+                            <input type="text" id="titreEval" placeholder="Ex: Examen Final, TP1...">
+                        </div>
+                        <div class="form-group">
+                            <label for="typeEval"> Type</label>
+                            <select id="typeEval">
+                                <option value="">Type d'évaluation</option>
+                                <option value="Examen">Examen</option>
+                                <option value="Contrôle continu">Contrôle continu</option>
+                                <option value="Projet">Projet</option>
+                                <option value="Oral">Oral</option>
+                                <option value="TP">TP</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="note"> Note (/20)</label>
+                            <input type="number" id="note" min="0" max="20" step="0.5" placeholder="Note sur 20">
+                        </div>
+                        <div class="form-group">
+                            <label for="coefficient">⚖️ Coefficient</label>
+                            <input type="number" id="coefficient" min="0" step="0.1" placeholder="Ex: 1, 1.5, 2">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateEval"> Date</label>
+                            <input type="date" id="dateEval">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="commentaire"> Commentaire</label>
+                        <input type="text" id="commentaire" placeholder="Commentaire de l'enseignant (optionnel)">
+                    </div>
+                    <button class="btn btn-success" id="btnCreateEval" style="margin-top: 15px;"> Créer l'évaluation</button>
+                </div>
+            </div>
+
+            <!-- Onglet Liste -->
+            <div id="listTab" class="tab-content">
+                <!-- Loading -->
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Chargement des évaluations...</p>
+                </div>
+
+                <!-- Liste des évaluations -->
+                <div id="evalsList" class="evals-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { omk } from './js/omk.js';
+
+        class EvalsApp {
+            constructor() {
+                this.omk = null;
+                this.evals = [];
+                this.cours = [];
+                this.etudiants = [];
+                
+                this.initElements();
+                this.initEventListeners();
+            }
+
+            initElements() {
+                this.btnInit = document.getElementById('btnInit');
+                this.btnCreateEval = document.getElementById('btnCreateEval');
+                this.loading = document.getElementById('loading');
+                this.evalsList = document.getElementById('evalsList');
+                this.errorMessage = document.getElementById('errorMessage');
+                this.successMessage = document.getElementById('successMessage');
+            }
+
+            initEventListeners() {
+                this.btnInit.addEventListener('click', () => this.initialize());
+                this.btnCreateEval.addEventListener('click', () => this.setEval());
+
+                // Gestion des onglets
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabName = e.target.dataset.tab;
+                        this.switchTab(tabName);
+                    });
+                });
+
+                // Charger les étudiants quand un cours est sélectionné
+                document.getElementById('selectCours').addEventListener('change', (e) => {
+                    this.loadEtudiantsByCours(e.target.value);
+                });
+            }
+
+            switchTab(tabName) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                document.getElementById(`${tabName}Tab`).classList.add('active');
+
+                if (tabName === 'list') {
+                    this.showEval();
+                }
+            }
+
+            showLoading(show) {
+                this.loading.style.display = show ? 'block' : 'none';
+            }
+
+            showError(message) {
+                this.errorMessage.innerHTML = `<div class="error-message">⚠️ ${message}</div>`;
+                setTimeout(() => this.errorMessage.innerHTML = '', 5000);
+            }
+
+            showSuccess(message) {
+                this.successMessage.innerHTML = `<div class="success-message">✅ ${message}</div>`;
+                setTimeout(() => this.successMessage.innerHTML = '', 5000);
+            }
+
+            async initialize() {
+                const apiUrl = document.getElementById('omekaUrl').value;
+                const keyIdentity = 'FJZwuNrsgzZr9XLMk4RCCHtQeH0CMjOW';
+                const keyCredential = 'h1I71HZSh8NxKm5FhWIHjMdqNFOzotmo';
+
+                if (!apiUrl) {
+                    this.showError('Veuillez renseigner l\'URL de l\'API Omeka-S');
+                    return;
+                }
+
+                this.btnInit.disabled = true;
+
+                try {
+                    this.omk = new omk({
+                        api: apiUrl,
+                        key: keyCredential,
+                        ident: keyIdentity
+                    });
+
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    await this.loadCours();
+                    await this.loadAllEtudiants();
+
+                    this.showSuccess('Initialisation réussie !');
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showError('Erreur lors de l\'initialisation: ' + error.message);
+                } finally {
+                    this.btnInit.disabled = false;
+                }
+            }
+
+            async loadCours() {
+                const coursClass = this.omk.getClassByTerm('master:Cours');
+                if (!coursClass) {
+                    throw new Error('Classe master:Cours non trouvée');
+                }
+
+                const query = `resource_class_id=${coursClass['o:id']}`;
+                this.cours = this.omk.getAllItems(query);
+
+                const selectCours = document.getElementById('selectCours');
+                selectCours.innerHTML = '<option value="">Sélectionnez un cours</option>';
+                
+                this.cours.forEach(cours => {
+                    const titre = this.getPropertyValue(cours, 'master:titreCours') || 
+                                 this.getPropertyValue(cours, 'dcterms:title') || 
+                                 'Cours sans titre';
+                    const option = document.createElement('option');
+                    option.value = cours['o:id'];
+                    option.textContent = titre;
+                    selectCours.appendChild(option);
+                });
+            }
+
+            async loadAllEtudiants() {
+                const etudiantClass = this.omk.getClassByTerm('master:Etudiant');
+                if (!etudiantClass) {
+                    throw new Error('Classe master:Etudiant non trouvée');
+                }
+
+                const query = `resource_class_id=${etudiantClass['o:id']}`;
+                this.etudiants = this.omk.getAllItems(query);
+            }
+
+            loadEtudiantsByCours(coursId) {
+                const selectEtudiant = document.getElementById('selectEtudiant');
+                selectEtudiant.innerHTML = '<option value="">Sélectionnez un étudiant</option>';
+
+                if (!coursId) return;
+
+                const inscritDansProp = this.omk.getPropByTerm('master:inscritDans');
+                if (!inscritDansProp) return;
+
+                const query = `property[0][property]=${inscritDansProp['o:id']}&property[0][type]=res&property[0][text]=${coursId}`;
+                const etudiantsInscrits = this.omk.searchItems(query);
+
+                etudiantsInscrits.forEach(etudiant => {
+                    const nom = this.getPropertyValue(etudiant, 'master:nomEtudiant') || '';
+                    const prenom = this.getPropertyValue(etudiant, 'master:prenomEtudiant') || '';
+                    const nomComplet = `${prenom} ${nom}`.trim() || 
+                                      this.getPropertyValue(etudiant, 'dcterms:title') || 
+                                      'Étudiant';
+                    
+                    const option = document.createElement('option');
+                    option.value = etudiant['o:id'];
+                    option.textContent = nomComplet;
+                    selectEtudiant.appendChild(option);
+                });
+            }
+
+            async setEval() {
+                const coursId = document.getElementById('selectCours').value;
+                const etudiantId = document.getElementById('selectEtudiant').value;
+                const titreEval = document.getElementById('titreEval').value;
+                const typeEval = document.getElementById('typeEval').value;
+                const note = document.getElementById('note').value;
+                const coefficient = document.getElementById('coefficient').value;
+                const dateEval = document.getElementById('dateEval').value;
+                const commentaire = document.getElementById('commentaire').value;
+
+                if (!coursId || !etudiantId || !titreEval || !typeEval || !note) {
+                    this.showError('Veuillez remplir tous les champs obligatoires');
+                    return;
+                }
+
+                this.btnCreateEval.disabled = true;
+
+                try {
+                    // 1. Créer l'Évaluation
+                    const evaluationData = {
+                        'o:resource_class': 'master:Evaluation',
+                        'dcterms:title': titreEval,
+                        'master:titreEvaluation': titreEval,
+                        'master:typeEvaluation': typeEval,
+                        'master:dateEvaluation': dateEval || new Date().toISOString().split('T')[0],
+                        'master:coefficient': coefficient || '1',
+                        'master:evalueDans': [{rid: parseInt(coursId)}]
+                    };
+
+                    const evaluation = await new Promise((resolve) => {
+                        this.omk.createItem(evaluationData, resolve);
+                    });
+
+                    // 2. Créer la Note
+                    const noteData = {
+                        'o:resource_class': 'master:Note',
+                        'dcterms:title': `Note ${titreEval} - ${document.getElementById('selectEtudiant').options[document.getElementById('selectEtudiant').selectedIndex].text}`,
+                        'master:valeurNote': note,
+                        'master:commentaire': commentaire || '',
+                        'master:dateAttribution': new Date().toISOString().split('T')[0],
+                        'master:obtenuePar': [{rid: parseInt(etudiantId)}],
+                        'master:concerneEvaluation': [{rid: evaluation['o:id']}]
+                    };
+
+                    await new Promise((resolve) => {
+                        this.omk.createItem(noteData, resolve);
+                    });
+
+                    this.showSuccess('Évaluation créée avec succès !');
+                    
+                    // Réinitialiser le formulaire
+                    document.getElementById('titreEval').value = '';
+                    document.getElementById('typeEval').value = '';
+                    document.getElementById('note').value = '';
+                    document.getElementById('coefficient').value = '';
+                    document.getElementById('dateEval').value = '';
+                    document.getElementById('commentaire').value = '';
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showError('Erreur lors de la création: ' + error.message);
+                } finally {
+                    this.btnCreateEval.disabled = false;
+                }
+            }
+
+            async showEval() {
+                this.showLoading(true);
+                this.evalsList.innerHTML = '';
+
+                try {
+                    // Récupérer toutes les notes
+                    const noteClass = this.omk.getClassByTerm('master:Note');
+                    if (!noteClass) {
+                        throw new Error('Classe master:Note non trouvée');
+                    }
+
+                    const query = `resource_class_id=${noteClass['o:id']}`;
+                    const notes = this.omk.getAllItems(query);
+
+                    if (!notes || notes.length === 0) {
+                        this.evalsList.innerHTML = '<div class="no-data">📭 Aucune évaluation trouvée</div>';
+                        return;
+                    }
+
+                    // Afficher chaque note
+                    for (const note of notes) {
+                        const card = await this.createEvalCard(note);
+                        this.evalsList.appendChild(card);
+                    }
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showError('Erreur lors du chargement des évaluations: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            async createEvalCard(note) {
+                const card = document.createElement('div');
+                card.className = 'eval-card';
+
+                const noteId = note['o:id'];
+                const valeurNote = this.getPropertyValue(note, 'master:valeurNote') || 'N/A';
+                const commentaire = this.getPropertyValue(note, 'master:commentaire') || '';
+                const dateAttribution = this.getPropertyValue(note, 'master:dateAttribution') || '';
+
+                // Récupérer l'étudiant
+                const etudiantRef = note['master:obtenuePar'];
+                let etudiantNom = 'Étudiant inconnu';
+                if (etudiantRef && etudiantRef[0]) {
+                    const etudiant = this.omk.getItem(etudiantRef[0]['value_resource_id']);
+                    const nom = this.getPropertyValue(etudiant, 'master:nomEtudiant') || '';
+                    const prenom = this.getPropertyValue(etudiant, 'master:prenomEtudiant') || '';
+                    etudiantNom = `${prenom} ${nom}`.trim() || this.getPropertyValue(etudiant, 'dcterms:title');
+                }
+
+                // Récupérer l'évaluation
+                const evalRef = note['master:concerneEvaluation'];
+                let evalInfo = { titre: 'Évaluation', type: '', date: '', cours: 'Cours inconnu' };
+                
+                if (evalRef && evalRef[0]) {
+                    const evaluation = this.omk.getItem(evalRef[0]['value_resource_id']);
+                    evalInfo.titre = this.getPropertyValue(evaluation, 'master:titreEvaluation') || 
+                                    this.getPropertyValue(evaluation, 'dcterms:title') || 'Évaluation';
+                    evalInfo.type = this.getPropertyValue(evaluation, 'master:typeEvaluation') || '';
+                    evalInfo.date = this.getPropertyValue(evaluation, 'master:dateEvaluation') || '';
+
+                    // Récupérer le cours
+                    const coursRef = evaluation['master:evalueDans'];
+                    if (coursRef && coursRef[0]) {
+                        const cours = this.omk.getItem(coursRef[0]['value_resource_id']);
+                        evalInfo.cours = this.getPropertyValue(cours, 'master:titreCours') || 
+                                        this.getPropertyValue(cours, 'dcterms:title') || 'Cours';
+                    }
+                }
+
+                card.innerHTML = `
+                    <div class="eval-header">
+                        <div class="eval-id">ID: ${noteId}</div>
+                        <div class="eval-title">${evalInfo.titre}</div>
+                    </div>
+
+                    <div class="note-badge">📊 ${valeurNote} / 20</div>
+
+                    <div class="eval-info">
+                        <div class="info-item">
+                            <span class="info-label">👤 Étudiant:</span>
+                            <span class="info-value">${etudiantNom}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📚 Cours:</span>
+                            <span class="info-value">${evalInfo.cours}</span>
+                        </div>
+                        ${evalInfo.type ? `
+                        <div class="info-item">
+                            <span class="info-label">📋 Type:</span>
+                            <span class="info-value">${evalInfo.type}</span>
+                        </div>` : ''}
+                        ${evalInfo.date ? `
+                        <div class="info-item">
+                            <span class="info-label">📅 Date eval:</span>
+                            <span class="info-value">${new Date(evalInfo.date).toLocaleDateString('fr-FR')}</span>
+                        </div>` : ''}
+                        ${dateAttribution ? `
+                        <div class="info-item">
+                            <span class="info-label">✅ Note attribuée:</span>
+                            <span class="info-value">${new Date(dateAttribution).toLocaleDateString('fr-FR')}</span>
+                        </div>` : ''}
+                        ${commentaire ? `
+                        <div class="info-item">
+                            <span class="info-label">💬 Commentaire:</span>
+                            <span class="info-value">${commentaire}</span>
+                        </div>` : ''}
+                    </div>
+                `;
+
+                return card;
+            }
+
+            getPropertyValue(item, property) {
+                if (!item || !item[property]) return null;
+                
+                const prop = item[property];
+                if (Array.isArray(prop) && prop.length > 0) {
+                    return prop[0]['@value'] || prop[0]['o:label'] || null;
+                }
+                return null;
+            }
+        }
+
+        // Initialiser l'application
+        document.addEventListener('DOMContentLoaded', () => {
+            new EvalsApp();
+        });
+    </script>
+</body>
+</html>
