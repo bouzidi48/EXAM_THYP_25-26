@@ -3,9 +3,9 @@
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix master: <https://raw.githubusercontent.com/bouzidi48/EXAM_THYP_25-26/main/vocab#> .
+@prefix master: <https://raw.githubusercontent.com/bouzidi48/EXAM_THYP_25-26/main/omk/vocab#> .
 
-<https://raw.githubusercontent.com/bouzidi48/EXAM_THYP_25-26/main/vocab.ttl>
+<https://raw.githubusercontent.com/bouzidi48/EXAM_THYP_25-26/main/omk/vocab.ttl>
     a owl:Ontology ;
     rdfs:label "Vocabulaire Évaluations Master"@fr ;
     dcterms:creator "Bouzidi Idrissi Mohammed"@fr ;
