@@ -1,0 +1,246 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix master: <https://raw.githubusercontent.com/bouzidi48/EXAM_THYP_25-26/main/vocab#> .
+
+<https://raw.githubusercontent.com/bouzidi48/EXAM_THYP_25-26/main/vocab.ttl>
+    a owl:Ontology ;
+    rdfs:label "Vocabulaire Évaluations Master"@fr ;
+    dcterms:creator "Bouzidi Idrissi Mohammed"@fr ;
+    dcterms:description "Vocabulaire RDF/Turtle pour gérer les évaluations des étudiants dans les cours d'un Master."@fr ;
+    dcterms:issued "2025-12-09"^^xsd:date ;
+    owl:versionInfo "1.0" .
+
+
+
+master:Etudiant a rdfs:Class ;
+    rdfs:label "Étudiant"@fr ;
+    rdfs:comment "Personne inscrite dans un Master et suivant des cours."@fr .
+
+master:Enseignant a rdfs:Class ;
+    rdfs:label "Enseignant"@fr ;
+    rdfs:comment "Personne responsable d'enseigner un ou plusieurs cours."@fr .
+
+master:Cours a rdfs:Class ;
+    rdfs:label "Cours"@fr ;
+    rdfs:comment "Unité d'enseignement dispensée dans le cadre du Master."@fr .
+
+master:Evaluation a rdfs:Class ;
+    rdfs:label "Évaluation"@fr ;
+    rdfs:comment "Épreuve ou examen permettant d'évaluer les connaissances d'un étudiant."@fr .
+
+master:Note a rdfs:Class ;
+    rdfs:label "Note"@fr ;
+    rdfs:comment "Résultat obtenu par un étudiant à une évaluation."@fr .
+
+master:Master a rdfs:Class ;
+    rdfs:label "Master"@fr ;
+    rdfs:comment "Programme de formation de niveau bac+5."@fr .
+
+
+
+
+master:idEtudiant a rdf:Property ;
+    rdfs:label "Identifiant étudiant"@fr ;
+    rdfs:domain master:Etudiant ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant unique de l'étudiant."@fr .
+
+master:nomEtudiant a rdf:Property ;
+    rdfs:label "Nom"@fr ;
+    rdfs:domain master:Etudiant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Nom complet de l'étudiant."@fr .
+
+master:prenomEtudiant a rdf:Property ;
+    rdfs:label "Prénom"@fr ;
+    rdfs:domain master:Etudiant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Prénom de l'étudiant."@fr .
+
+master:emailEtudiant a rdf:Property ;
+    rdfs:label "Email"@fr ;
+    rdfs:domain master:Etudiant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Adresse email de l'étudiant."@fr .
+
+master:numeroEtudiant a rdf:Property ;
+    rdfs:label "Numéro étudiant"@fr ;
+    rdfs:domain master:Etudiant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Numéro d'inscription de l'étudiant."@fr .
+
+master:inscritDans a rdf:Property ;
+    rdfs:label "Inscrit dans"@fr ;
+    rdfs:domain master:Etudiant ;
+    rdfs:range master:Master ;
+    rdfs:comment "Master dans lequel l'étudiant est inscrit."@fr .
+
+
+master:idEnseignant a rdf:Property ;
+    rdfs:label "Identifiant enseignant"@fr ;
+    rdfs:domain master:Enseignant ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant unique de l'enseignant."@fr .
+
+master:nomEnseignant a rdf:Property ;
+    rdfs:label "Nom"@fr ;
+    rdfs:domain master:Enseignant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Nom complet de l'enseignant."@fr .
+
+master:emailEnseignant a rdf:Property ;
+    rdfs:label "Email"@fr ;
+    rdfs:domain master:Enseignant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Adresse email de l'enseignant."@fr .
+
+master:specialite a rdf:Property ;
+    rdfs:label "Spécialité"@fr ;
+    rdfs:domain master:Enseignant ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Domaine de spécialité de l'enseignant."@fr .
+
+
+master:idCours a rdf:Property ;
+    rdfs:label "Identifiant cours"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant unique du cours."@fr .
+
+master:titreCours a rdf:Property ;
+    rdfs:label "Titre"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Intitulé du cours."@fr .
+
+master:codeCours a rdf:Property ;
+    rdfs:label "Code"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Code du cours (ex: THYP_2025)."@fr .
+
+master:credits a rdf:Property ;
+    rdfs:label "Crédits ECTS"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Nombre de crédits ECTS associés au cours."@fr .
+
+master:semestre a rdf:Property ;
+    rdfs:label "Semestre"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Semestre où le cours est dispensé (S1, S2, S3, S4)."@fr .
+
+master:enseignePar a rdf:Property ;
+    rdfs:label "Enseigné par"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range master:Enseignant ;
+    rdfs:comment "Enseignant responsable du cours."@fr .
+
+master:faitPartieDe a rdf:Property ;
+    rdfs:label "Fait partie de"@fr ;
+    rdfs:domain master:Cours ;
+    rdfs:range master:Master ;
+    rdfs:comment "Master auquel appartient le cours."@fr .
+
+
+master:idEvaluation a rdf:Property ;
+    rdfs:label "Identifiant évaluation"@fr ;
+    rdfs:domain master:Evaluation ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant unique de l'évaluation."@fr .
+
+master:titreEvaluation a rdf:Property ;
+    rdfs:label "Titre"@fr ;
+    rdfs:domain master:Evaluation ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Titre de l'évaluation (Examen final, TP1, etc.)."@fr .
+
+master:typeEvaluation a rdf:Property ;
+    rdfs:label "Type"@fr ;
+    rdfs:domain master:Evaluation ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Type d'évaluation (examen, contrôle continu, projet, oral)."@fr .
+
+master:dateEvaluation a rdf:Property ;
+    rdfs:label "Date"@fr ;
+    rdfs:domain master:Evaluation ;
+    rdfs:range xsd:date ;
+    rdfs:comment "Date à laquelle l'évaluation a lieu."@fr .
+
+master:coefficient a rdf:Property ;
+    rdfs:label "Coefficient"@fr ;
+    rdfs:domain master:Evaluation ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Coefficient de l'évaluation dans la note finale du cours."@fr .
+
+master:evalueDans a rdf:Property ;
+    rdfs:label "Évalue dans"@fr ;
+    rdfs:domain master:Evaluation ;
+    rdfs:range master:Cours ;
+    rdfs:comment "Cours auquel appartient cette évaluation."@fr .
+
+
+master:idNote a rdf:Property ;
+    rdfs:label "Identifiant note"@fr ;
+    rdfs:domain master:Note ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant unique de la note."@fr .
+
+master:valeurNote a rdf:Property ;
+    rdfs:label "Valeur"@fr ;
+    rdfs:domain master:Note ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Valeur numérique de la note (sur 20)."@fr .
+
+master:commentaire a rdf:Property ;
+    rdfs:label "Commentaire"@fr ;
+    rdfs:domain master:Note ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Commentaire ou appréciation de l'enseignant."@fr .
+
+master:dateAttribution a rdf:Property ;
+    rdfs:label "Date d'attribution"@fr ;
+    rdfs:domain master:Note ;
+    rdfs:range xsd:date ;
+    rdfs:comment "Date à laquelle la note a été attribuée."@fr .
+
+master:obtenuePar a rdf:Property ;
+    rdfs:label "Obtenue par"@fr ;
+    rdfs:domain master:Note ;
+    rdfs:range master:Etudiant ;
+    rdfs:comment "Étudiant ayant obtenu cette note."@fr .
+
+master:concerneEvaluation a rdf:Property ;
+    rdfs:label "Concerne l'évaluation"@fr ;
+    rdfs:domain master:Note ;
+    rdfs:range master:Evaluation ;
+    rdfs:comment "Évaluation à laquelle cette note correspond."@fr .
+
+
+master:idMaster a rdf:Property ;
+    rdfs:label "Identifiant master"@fr ;
+    rdfs:domain master:Master ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant unique du Master."@fr .
+
+master:nomMaster a rdf:Property ;
+    rdfs:label "Nom"@fr ;
+    rdfs:domain master:Master ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Nom complet du Master."@fr .
+
+master:specialiteMaster a rdf:Property ;
+    rdfs:label "Spécialité"@fr ;
+    rdfs:domain master:Master ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Spécialité ou parcours du Master."@fr .
+
+master:anneeUniversitaire a rdf:Property ;
+    rdfs:label "Année universitaire"@fr ;
+    rdfs:domain master:Master ;
+    rdfs:range rdfs:Literal ;
+    rdfs:comment "Année universitaire (ex: 2024-2025)."@fr .
